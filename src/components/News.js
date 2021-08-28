@@ -2,53 +2,56 @@ import React, { Component } from 'react'
 import NewsItem from './NewsItem'
 
 export class News extends Component {
-    articles = [
-        {
-          "source": { "id": "espn-cric-info", "name": "ESPN Cric Info" },
-          "author": null,
-          "title": "PCB hands Umar Akmal three-year ban from all cricket | ESPNcricinfo.com",
-          "description": "Penalty after the batsman pleaded guilty to not reporting corrupt approaches | ESPNcricinfo.com",
-          "url": "http://www.espncricinfo.com/story/_/id/29103103/pcb-hands-umar-akmal-three-year-ban-all-cricket",
-          "urlToImage": "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg",
-          "publishedAt": "2020-04-27T11:41:47Z",
-          "content": "Umar Akmal's troubled cricket career has hit its biggest roadblock yet, with the PCB handing him a ban from all representative cricket for three years after he pleaded guilty of failing to report det… [+1506 chars]"
-        },
-        {
-          "source": { "id": "espn-cric-info", "name": "ESPN Cric Info" },
-          "author": null,
-          "title": "What we learned from watching the 1992 World Cup final in full again | ESPNcricinfo.com",
-          "description": "Wides, lbw calls, swing - plenty of things were different in white-ball cricket back then | ESPNcricinfo.com",
-          "url": "http://www.espncricinfo.com/story/_/id/28970907/learned-watching-1992-world-cup-final-full-again",
-          "urlToImage": "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1219926_1296x729.jpg",
-          "publishedAt": "2020-03-30T15:26:05Z",
-          "content": "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]"
-        }
-      ]
     constructor(){
         super();
-        console.log("News Item fetched");
         this.state = {
-            articles: this.articles,
-            loading: false
+            articles: [],
+            loading: false,
+            page:1
         }
     }
+
+    async componentDidMount(){
+        let data = await fetch("https://newsapi.org/v2/top-headlines?country=in&apiKey=c5849d23c67441a8bcbc80e68c20d1b7&page=1");
+        let parsedData = await data.json();
+        this.setState({articles: parsedData.articles , totalResult: parsedData.totalResult})
+    }
+    
+    handlePrevClick = async ()=>{
+        let data = await fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=c5849d23c67441a8bcbc80e68c20d1b7&page=${this.state.page - 1}&pageSize=20`);
+        let parsedData = await data.json();
+        this.setState({
+            page: this.state.page - 1,
+            articles: parsedData.articles
+        })
+    }
+    handleNextClick = async ()=>{
+        if(this.state.page+1 > Math.ceil(this.state.totalResult/20)){}
+        else{
+            let data = await fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=c5849d23c67441a8bcbc80e68c20d1b7&page=${this.state.page + 1}&pageSize=20`);
+            let parsedData = await data.json();
+            this.setState({
+                page: this.state.page + 1,
+                articles: parsedData.articles
+            })
+        }
+    }
+
     render() {
         return (
             <div className="container my-3">
-                <h4>NewsPaper - Top Headlines</h4>
+                <h2><strong><i>NewsPaper - Top Headlines</i></strong></h2>
                 <div className="row">
-                    <div className="col-md-3">
-                        <NewsItem title="myTitle" description="myDisc" imgUrl="https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1219926_1296x729.jpg" newsUrl="TO-DO"/>
-                    </div>
-                    <div className="col-md-3">
-                        <NewsItem title="myTitle" description="myDisc"/>
-                    </div>
-                    <div className="col-md-3">
-                        <NewsItem title="myTitle" description="myDisc"/>
-                    </div>
-                    <div className="col-md-3">
-                        <NewsItem title="myTitle" description="myDisc"/>
-                    </div>
+                    {this.state.articles.map((elem)=>{
+                        console.log(elem);
+                        return  <div className="col-md-3"  key={elem.url}>
+                                        <NewsItem title={elem.title ? elem.title : "Title"} description={elem.description ? elem.description : ""} imgUrl={elem.urlToImage ? elem.urlToImage : "https://wallpaperaccess.com/full/2112629.jpg"} newsUrl={elem.url}/>
+                                </div>
+                    })}
+                </div>
+                <div className="container d-flex justify-content-between">
+                    <button disabled={this.state.page <= 1} type="button" className="btn btn-dark" onClick={this.handlePrevClick}>&larr; Previous Page</button>
+                    <button type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next Page &rarr;</button>
                 </div>
             </div>
         )
