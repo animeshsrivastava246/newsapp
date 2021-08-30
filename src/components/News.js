@@ -40,7 +40,7 @@ export class News extends Component {
     render() {
         return (
             <div className="container my-3">
-                <h2><strong><i>NewsPaper - Top Headlines</i></strong></h2>
+                <h2 className="text-center"><strong><i>NewsPaper - Top Headlines</i></strong></h2>
                 <div className="row">
                     {this.state.articles.map((elem)=>{
                         console.log(elem);
@@ -51,7 +51,7 @@ export class News extends Component {
                 </div>
                 <div className="container d-flex justify-content-between">
                     <button disabled={this.state.page <= 1} type="button" className="btn btn-dark" onClick={this.handlePrevClick}>&larr; Previous Page</button>
-                    <button type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next Page &rarr;</button>
+                    <button disabled={this.state.page+1 > Math.ceil(this.state.totalResult/20)} type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next Page &rarr;</button>
                 </div>
             </div>
         )
