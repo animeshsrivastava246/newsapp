@@ -14,13 +14,17 @@ export class News extends Component {
         country: PropTypes.string,
         category: PropTypes.string,
     }
-    constructor(){
-        super();
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    constructor(props){
+        super(props);
         this.state = {
             articles: [],
             loading: false,
             page:1
         }
+        document.title = `NewsPaper - ${this.capitalizeFirstLetter(this.props.category)}`
     }
 
     async updateNews(){
@@ -50,7 +54,7 @@ export class News extends Component {
     render() {
         return (
             <div className="container my-3">
-                <h2 className="text-center" style={{margin: '30px 0px'}}><strong><i>NewsPaper - Top Headlines</i></strong></h2>
+                <h2 className="text-center" style={{margin: '30px 0px'}}><strong><i>NewsPaper - {this.capitalizeFirstLetter(this.props.category)} - Top Headlines</i></strong></h2>
                 {this.state.loading && <Spinner/>}
                 <div className="row">
                     {(!this.state.loading) && this.state.articles.map((elem)=>{
