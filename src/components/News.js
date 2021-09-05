@@ -30,14 +30,18 @@ export class News extends Component {
     }
 
     async updateNews(){
+        this.props.setProgress(0);
         this.setState({loading: true})
-        let data = await fetch(`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c5849d23c67441a8bcbc80e68c20d1b7&page=${this.state.page}&pageSize=${this.props.pgSize}`);
+        let data = await fetch(`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pgSize}`);
+        this.props.setProgress(35);
         let parsedData = await data.json();
+        this.props.setProgress(75);
         this.setState({
             articles: parsedData.articles ,
             totRes: parsedData.totalResults ,
             loading: false
         })
+        this.props.setProgress(100);
     }
     
     async componentDidMount(){
@@ -46,7 +50,7 @@ export class News extends Component {
     
     fetchMoreData = async ()=>{
         this.setState({page: this.state.page + 1})
-        let data = await fetch(`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c5849d23c67441a8bcbc80e68c20d1b7&page=${this.state.page}&pageSize=${this.props.pgSize}`);
+        let data = await fetch(`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pgSize}`);
         let parsedData = await data.json();
         this.setState({
             articles: this.state.articles.concat(parsedData.articles) ,
@@ -66,7 +70,7 @@ export class News extends Component {
     render() {
         return (
             <>
-                <h2 className="text-center" style={{margin: '30px 0px'}}><strong><i>NewsPaper - {this.capitalizeFirstLetter(this.props.category)} - Top Headlines</i></strong></h2>
+                <h2 className="text-center" style={{margin: '30px 0px' , marginTop: '56px'}}><strong><i>NewsPaper - {this.capitalizeFirstLetter(this.props.category)} - Top Headlines</i></strong></h2>
                 {this.state.loading && <Spinner/>}
                 <InfiniteScroll
                     dataLength={this.state.articles.length}
