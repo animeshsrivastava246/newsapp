@@ -11,6 +11,7 @@ import LoadingBar from 'react-top-loading-bar';
 export default class App extends Component {
   pageSize = 8;
   apiKey = process.env.REACT_APP_NEWSPAPER_API;
+  //apiKey = fgashjfgsadhfgsdhgfhjsdafhsd; Put your own api key from news api website
   state = {
     progress: 0
   }
