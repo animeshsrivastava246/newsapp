@@ -68,3 +68,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+If not working:
+Use : 1. npx browserslist@latest --update-db 2. $env:NODE_OPTIONS = "--openssl-legacy-provider"
+3.npm install --save --legacy-peer-deps
